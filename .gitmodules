@@ -1,0 +1,3 @@
+[submodule "44con/db"]
+	path = 44con/db
+	url = https://github.com/zcutlip/dropbear-hacks.git
