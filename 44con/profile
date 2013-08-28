@@ -1,6 +1,6 @@
 # /etc/profile: system-wide .profile file for the Bourne shells
 
-PATH=/tmp/toolkit/sbin:/tmp/toolkit/bin:/tmp/toolkit/usr/sbin:/tmp/toolkit/usr/bin:/var/module:/bin:/sbin:/usr/bin
+PATH=/tmp/tk/sbin:/tmp/tk/bin:/tmp/tk/usr/sbin:/tmp/tk/usr/bin:/var/module:/bin:/sbin:/usr/bin
 export PATH
 
 

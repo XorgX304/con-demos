@@ -1,21 +1,38 @@
-ROOT?=/home/zach/code
-DB=$(ROOT)/embedded-dropbear
-SCP=$(DB)/scp
-DROPBEAR=$(DB)/dropbear
-BB=$(ROOT)/busybox-1.21.0
-BUSYBOX=$(BB)/toolkit.tar.gz
+TRUNK?=$(PWD)
+DB_DIR=$(TRUNK)/db
+BB_DIR=$(TRUNK)/bb
+BUSYBOX_TK=$(TRUNK)/toolkit
 
-TK_DIR=$(PWD)/tk-installer
+TK_DIR=$(TRUNK)/tk-installer
 
-all:$(TK_DIR) $(SCP) $(DROPBEAR) $(BUSYBOX)
-	cp $(SCP) $(DROPBEAR) $(TK_DIR)/tk
-	cp $(BUSYBOX) $(TK_DIR)/tk
+	
+all:tk.tar.gz
+
+
+scp dropbear:
+	cd $(DB_DIR) && \
+	ALT_SHELL=/tmp/tk/bin/sh FAKE_ROOT=1 ./buildmips.sh || exit 1
+	cp $(DB_DIR)/scp .
+	cp $(DB_DIR)/dropbear .
+$(BUSYBOX_TK):
+	CFLAGS='-DALT_PROFILE=\"/tmp/tk/profile\"' make -C $(BB_DIR) busybox-mips
+	cp -a $(BB_DIR)/toolkit .
+
+tk.tar.gz:$(TK_DIR) $(BUSYBOX_TK) scp dropbear
+	rsync -av --delete $(BUSYBOX_TK)/ $(TK_DIR)/tk/
+	cp scp $(TK_DIR)/tk/sbin/
+	cp dropbear $(TK_DIR)/tk/sbin/
 	cp profile $(TK_DIR)/tk
 	cp rsa-host-key $(TK_DIR)/tk
 	cp demosetup.sh $(PWD)/tk-installer
+	tar zcvf tk.tar.gz tk-installer
+	
 $(TK_DIR):
 	mkdir -p $(TK_DIR)/tk
 
 clean:
+	make -C $(DB_DIR) clean
+	make -C $(BB_DIR) distclean
+	rm -f tk.tar.gz
 	-rm -rf $(TK_DIR)
 
