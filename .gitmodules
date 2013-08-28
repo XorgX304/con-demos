@@ -1,3 +1,6 @@
 [submodule "44con/db"]
 	path = 44con/db
 	url = https://github.com/zcutlip/dropbear-hacks.git
+[submodule "44con/bb"]
+	path = 44con/bb
+	url = https://github.com/zcutlip/busybox-hacks.git
