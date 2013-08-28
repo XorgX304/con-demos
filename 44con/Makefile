@@ -31,8 +31,11 @@ $(TK_DIR):
 	mkdir -p $(TK_DIR)/tk
 
 clean:
-	make -C $(DB_DIR) clean
-	make -C $(BB_DIR) distclean
-	rm -f tk.tar.gz
+	-rm -rf $(BUSYBOX_TK)
+	-rm -rf scp
+	-rm -rf	dropbear
+	-make -C $(DB_DIR) clean
+	-make -C $(BB_DIR) distclean
+	-rm -f tk.tar.gz
 	-rm -rf $(TK_DIR)
 
