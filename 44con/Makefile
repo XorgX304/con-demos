@@ -1,13 +1,27 @@
 TRUNK?=$(PWD)
 DB_DIR=$(TRUNK)/db
 BB_DIR=$(TRUNK)/bb
+EXPLOIT_DIR=$(TRUNK)/exploit
 BUSYBOX_TK=$(TRUNK)/toolkit
 
 TK_DIR=$(TRUNK)/tk-installer
 
+export IPADDRESS=192.168.0.10
 	
-all:tk.tar.gz
+all:tk.tar.gz exploit-code
 
+exploit-code: .exploit-stamp
+
+.exploit-stamp: $(EXPLOIT_DIR) stage2
+	cp exploit-src/* $(EXPLOIT_DIR)/
+	touch .exploit-stamp
+
+$(EXPLOIT_DIR):
+	mkdir -p $(EXPLOIT_DIR)
+
+stage2: $(EXPLOIT_DIR)
+	cd src && STAGE2_DROP="/tmp/tk.tar.gz" ./buildmips.sh
+	cp src/stage2 $(EXPLOIT_DIR)/
 
 scp dropbear:
 	cd $(DB_DIR) && \
@@ -31,6 +45,7 @@ $(TK_DIR):
 	mkdir -p $(TK_DIR)/tk
 
 clean:
+	-rm -rf $(EXPLOIT_DIR)
 	-rm -rf $(BUSYBOX_TK)
 	-rm -rf scp
 	-rm -rf	dropbear
@@ -38,4 +53,5 @@ clean:
 	-make -C $(BB_DIR) distclean
 	-rm -f tk.tar.gz
 	-rm -rf $(TK_DIR)
+	-rm -f .*stamp
 
